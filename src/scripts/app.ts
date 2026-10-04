@@ -30,7 +30,7 @@ function forceRevealPage(): void {
 }
 
 export function initApp(): void {
-  onReady(() => {
+  onReady(async () => {
     const failsafe = window.setTimeout(forceRevealPage, 4000);
 
     // Foundation first so the page is interactive regardless of extras.
@@ -38,10 +38,22 @@ export function initApp(): void {
     safe("gsap", () => initGsap());
     safe("ui", () => initUI());
 
-    // Scroll-driven content.
-    safe("reveal", () => initReveal());
-    safe("services", () => initServicesScroll());
     safe("lightbox", () => initLightbox());
+
+    // Load the actual fonts before measuring animated text. Keep a bounded
+    // fallback for visitors whose font request fails or takes too long.
+    const fontsReady = new Promise<void>((resolve) => {
+      const timeout = window.setTimeout(resolve, 1500);
+      document.fonts.ready.then(() => {
+        window.clearTimeout(timeout);
+        resolve();
+      }, () => {
+        window.clearTimeout(timeout);
+        resolve();
+      });
+    });
+    const curtain = Promise.resolve().then(initPreloader)
+      .catch((err) => console.error("[motion] preloader failed:", err));
 
     // Keep the rolling words running only while their strip can be seen.
     const marquee = document.querySelector<HTMLElement>(".marquee-track");
@@ -63,20 +75,27 @@ export function initApp(): void {
       });
     }
 
-    // WebGL hero — lazy + guarded + fully optional.
-    if (allowHeavyMotion() && document.querySelector("[data-hero-canvas]")) {
-      import("../lib/motion/hero-webgl")
-        .then(({ initHeroWebGL }) => initHeroWebGL())
-        .catch((err) => console.error("[motion] webgl failed:", err));
-    }
+    await fontsReady;
+    safe("reveal", () => initReveal());
+    safe("services", () => initServicesScroll());
+    await curtain;
+    window.clearTimeout(failsafe);
+    forceRevealPage();
+    await Promise.resolve().then(playHeroIntro)
+      .catch((err) => console.error("[motion] hero-intro failed:", err));
 
-    // Intro curtain → hero entrance. Always clears the failsafe + curtain.
-    initPreloader()
-      .catch((err) => console.error("[motion] preloader failed:", err))
-      .finally(() => {
-        window.clearTimeout(failsafe);
-        forceRevealPage();
-        safe("hero-intro", () => playHeroIntro());
-      });
+    // Shader compilation and texture upload must not interrupt the text intro.
+    const background = () => {
+      if (allowHeavyMotion() && document.querySelector("[data-hero-canvas]")) {
+        import("../lib/motion/hero-webgl")
+          .then(({ initHeroWebGL }) => initHeroWebGL())
+          .catch((err) => console.error("[motion] webgl failed:", err));
+      }
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(background, { timeout: 1000 });
+    } else {
+      window.setTimeout(background, 0);
+    }
   });
 }

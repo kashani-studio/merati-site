@@ -5,9 +5,9 @@ import { prefersReducedMotion } from "./env";
 gsap.registerPlugin(SplitText);
 
 // Hero entrance timeline (runs on load, after the preloader).
-export function playHeroIntro(): void {
+export function playHeroIntro(): Promise<void> {
   const hero = document.querySelector<HTMLElement>("[data-hero]");
-  if (!hero) return;
+  if (!hero) return Promise.resolve();
 
   if (prefersReducedMotion()) {
     hero.querySelectorAll<HTMLElement>("[data-hero-stagger]").forEach((el) =>
@@ -15,24 +15,25 @@ export function playHeroIntro(): void {
     );
     const t = hero.querySelector<HTMLElement>("[data-hero-title]");
     if (t) gsap.set(t, { opacity: 1 });
-    return;
+    return Promise.resolve();
   }
 
   const title = hero.querySelector<HTMLElement>("[data-hero-title]");
-  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+  let complete!: () => void;
+  const finished = new Promise<void>((resolve) => { complete = resolve; });
+  const tl = gsap.timeline({ defaults: { ease: "power4.out" }, onComplete: complete });
 
   if (title) {
     gsap.set(title, { opacity: 1 });
     try {
-      const split = new SplitText(title, { type: "lines,words", linesClass: "split-line" });
+      // Keep natural line wrapping, including while fonts load or widths change.
+      const split = new SplitText(title, { type: "words" });
       tl.from(split.words, {
-        yPercent: 130,
+        y: 24,
         opacity: 0,
-        rotateX: -55,
         duration: 1.1,
         stagger: 0.06,
-        // Keep the entrance mask, then let italic strokes and descenders show.
-        onComplete: () => { gsap.set(split.lines, { overflow: "visible" }); },
+        onComplete: () => split.revert(),
       });
     } catch (err) {
       console.warn("[motion] SplitText fallback (hero):", err);
@@ -40,8 +41,10 @@ export function playHeroIntro(): void {
     }
   }
 
+  const stagger = hero.querySelectorAll<HTMLElement>("[data-hero-stagger]");
+  gsap.set(stagger, { opacity: 1 });
   tl.from(
-    hero.querySelectorAll<HTMLElement>("[data-hero-stagger]"),
+    stagger,
     { y: 30, opacity: 0, duration: 0.9, stagger: 0.12 },
     title ? "-=0.6" : 0
   );
@@ -66,4 +69,5 @@ export function playHeroIntro(): void {
       }
     });
   }
+  return finished;
 }

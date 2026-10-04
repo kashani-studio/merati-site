@@ -12,19 +12,17 @@ function initHeadlines(): void {
   heads.forEach((el) => {
     try {
       const split = new SplitText(el, {
-        type: "lines,words",
-        linesClass: "split-line",
+        type: "words",
       });
       gsap.set(el, { opacity: 1 });
       gsap.from(split.words, {
-        yPercent: 120,
+        y: 24,
         opacity: 0,
-        rotateX: -40,
         duration: 1,
         ease: "power4.out",
         stagger: 0.035,
-        // Finished headings must not clip italic strokes or descenders.
-        onComplete: () => { gsap.set(split.lines, { overflow: "visible" }); },
+        // Restore plain text so no animation wrappers can constrain the glyphs.
+        onComplete: () => split.revert(),
         scrollTrigger: { trigger: el, start: "top 85%" },
       });
     } catch (err) {

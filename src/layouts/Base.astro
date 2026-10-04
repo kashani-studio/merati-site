@@ -24,6 +24,12 @@ const siteUrl = (
   <head>
     <script is:inline>
       document.documentElement.classList.add("js");
+      // Avoid flashing the intro curtain on visits within the same session.
+      try {
+        if (sessionStorage.getItem("merati-intro") === "1") {
+          document.documentElement.classList.add("intro-seen");
+        }
+      } catch {}
     </script>
     <meta charset="UTF-8" />
     <meta

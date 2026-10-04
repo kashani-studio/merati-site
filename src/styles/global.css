@@ -162,18 +162,18 @@ ul {
   color: rgba(255, 255, 255, 0.7);
 }
 .split-line {
-  overflow: hidden;
-  padding-block: 0.04em;
+  overflow: visible;
 }
 
 /* prevent FOUC for animated headings/words — only when JS is available,
    so the content stays visible if scripts are disabled or fail to load. */
 .js [data-hero-title],
+.js [data-hero-stagger],
 .js [data-anim="heading"] {
   opacity: 0;
 }
 [data-hero-stagger] {
-  will-change: transform, opacity;
+  will-change: auto;
 }
 
 /* ----- Buttons ---------------------------------------------------------- */
@@ -355,7 +355,8 @@ body.is-loading {
   overflow: hidden;
 }
 /* No JS → never trap the page behind the intro curtain. */
-html:not(.js) .preloader {
+html:not(.js) .preloader,
+.intro-seen .preloader {
   display: none;
 }
 
@@ -584,6 +585,11 @@ html:not(.js) .preloader {
   width: 100% !important;
   height: 100% !important;
   display: block;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.hero-gl-ready .hero-gl {
+  opacity: 1;
 }
 .hero-scrim {
   position: absolute;
@@ -1433,6 +1439,7 @@ a.ci-value:hover {
     transition-duration: 0.001ms !important;
   }
   .js [data-hero-title],
+  .js [data-hero-stagger],
   .js [data-anim="heading"] {
     opacity: 1;
   }
