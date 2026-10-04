@@ -5,16 +5,19 @@ const items = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
 
-// Visual rhythm for the asymmetric grid. Honour an explicit gridLayout when set,
-// otherwise cycle a pleasing pattern so the masonry never feels mechanical.
-const pattern = ["large", "small", "tall", "wide", "small", "small", "tall", "small", "wide", "small", "large", "small"];
+// The first twelve form a complete mosaic; additional photos fill square tiles.
+const pattern = ["large", "small", "small", "wide", "small", "small", "small", "small", "small", "small", "small", "small"];
 const layoutClass = (i: number, explicit?: string) => {
-  const layout = explicit || pattern[i % pattern.length];
+  const layout = explicit || pattern[i] || "small";
   return layout === "small" ? "" : `is-${layout}`;
 };
 ---
 <section id="realisaties" class="section portfolio">
   <div class="container">
+    <div class="gallery-heading">
+      <span class="eyebrow">Vakwerk in beeld</span>
+      <p>{String(items.length).padStart(2, "0")} realisaties <span aria-hidden="true">/</span> Klik op een tegel om te vergroten</p>
+    </div>
     <div class="gallery">
       {items.map((item, i) => (
         <figure
@@ -24,10 +27,18 @@ const layoutClass = (i: number, explicit?: string) => {
           data-lb-cat={item.data.category}
           data-lb-loc={item.data.location}
           data-cursor="Bekijk"
+          aria-label={`Bekijk ${item.data.title}`}
         >
-          <img src={item.data.image} alt={item.data.alt} loading="lazy" decoding="async" />
+          <img src={item.data.thumbnail || item.data.image} alt={item.data.alt} loading="lazy" decoding="async" />
+          <span class="gallery-tile-index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <span class="gallery-tile-open" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M8 16 16 8M8 8h8v8" />
+            </svg>
+          </span>
           <figcaption>
             <span class="cap-cat">{item.data.category}</span>
+            <span class="cap-title">{item.data.title}</span>
             <span class="cap-loc">{item.data.location}</span>
           </figcaption>
         </figure>

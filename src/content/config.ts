@@ -17,6 +17,7 @@ const projects = defineCollection({
     category: z.string(),
     location: z.string(),
     image: z.string(),
+    thumbnail: z.string().optional(),
     alt: z.string(),
     order: z.number(),
     gridLayout: z.enum(["large", "wide", "tall", "small"]).optional(),
