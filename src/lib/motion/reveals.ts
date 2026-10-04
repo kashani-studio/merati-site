@@ -23,6 +23,8 @@ function initHeadlines(): void {
         duration: 1,
         ease: "power4.out",
         stagger: 0.035,
+        // Finished headings must not clip italic strokes or descenders.
+        onComplete: () => { gsap.set(split.lines, { overflow: "visible" }); },
         scrollTrigger: { trigger: el, start: "top 85%" },
       });
     } catch (err) {

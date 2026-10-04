@@ -31,6 +31,8 @@ export function playHeroIntro(): void {
         rotateX: -55,
         duration: 1.1,
         stagger: 0.06,
+        // Keep the entrance mask, then let italic strokes and descenders show.
+        onComplete: () => { gsap.set(split.lines, { overflow: "visible" }); },
       });
     } catch (err) {
       console.warn("[motion] SplitText fallback (hero):", err);
@@ -46,6 +48,22 @@ export function playHeroIntro(): void {
 
   const cue = hero.querySelector<HTMLElement>("[data-hero-cue]");
   if (cue) {
-    gsap.to(cue, { y: 10, repeat: -1, yoyo: true, duration: 1.2, ease: "sine.inOut" });
+    const animation = gsap.to(cue, { y: 10, repeat: -1, yoyo: true, duration: 1.2, ease: "sine.inOut" });
+    let inView = true;
+    const sync = () => animation.paused(!inView || document.hidden);
+    const visibility = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      sync();
+    });
+    visibility.observe(cue);
+    document.addEventListener("visibilitychange", sync);
+    sync();
+    window.addEventListener("pagehide", (event) => {
+      if (!event.persisted) {
+        visibility.disconnect();
+        document.removeEventListener("visibilitychange", sync);
+        animation.kill();
+      }
+    });
   }
 }

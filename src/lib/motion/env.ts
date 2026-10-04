@@ -32,7 +32,8 @@ export const supportsWebGL = (): boolean => {
 
 // Heavy/3D motion only when it is genuinely a good idea.
 export const allowHeavyMotion = (): boolean =>
-  !prefersReducedMotion() && supportsWebGL() && !isSmallScreen();
+  // The renderer checks its real context; don't allocate a throwaway one first.
+  !prefersReducedMotion() && !isSmallScreen();
 
 export const onReady = (fn: () => void): void => {
   if (document.readyState === "loading") {

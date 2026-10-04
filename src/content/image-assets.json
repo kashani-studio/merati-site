@@ -1,0 +1,12 @@
+{
+  "/uploads/behrouz-merati.jpg": {
+    "src": "/uploads/optimized/behrouz-merati.webp",
+    "width": 442,
+    "height": 683
+  },
+  "/uploads/hero-tilework.png": {
+    "src": "/uploads/optimized/hero-tilework.webp",
+    "width": 1536,
+    "height": 1024
+  }
+}

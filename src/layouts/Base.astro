@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import settings from "../content/settings.json";
 import Preloader from "../components/Preloader.astro";
+import { imageAsset } from "../lib/images";
 
 interface Props {
   title?: string;
@@ -43,6 +44,7 @@ const siteUrl = (
     <meta property="og:url" content={siteUrl} />
 
     <title>{pageTitle}</title>
+    {!title && <link rel="preload" as="image" href={imageAsset("/uploads/hero-tilework.png").src} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

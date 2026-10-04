@@ -1,8 +1,9 @@
 ---
 import settings from "../content/settings.json";
 import SocialLinks from "./SocialLinks.astro";
+import { imageAsset } from "../lib/images";
 const h = settings.hero;
-const heroImage = "/uploads/hero-tilework.png";
+const heroImage = imageAsset("/uploads/hero-tilework.png").src;
 
 type Stat = { value: string; label: string };
 const stats: Stat[] = h.stats;

@@ -1,6 +1,8 @@
 ---
 import settings from "../content/settings.json";
+import { imageAsset } from "../lib/images";
 const a = settings.about;
+const portrait = imageAsset(a.portrait);
 
 // Lichte inline-markdown: **bold** en *italic*. Genoeg voor de bio-paragrafen.
 const renderInline = (s: string) =>
@@ -14,7 +16,9 @@ const renderInline = (s: string) =>
       <div class="about-portrait" data-anim="clip">
         <div class="about-portrait-frame">
           <img
-            src={a.portrait}
+            src={portrait.src}
+            width={portrait.width}
+            height={portrait.height}
             alt={a.portraitAlt}
             loading="lazy"
             decoding="async"

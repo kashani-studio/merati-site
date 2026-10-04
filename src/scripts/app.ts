@@ -1,14 +1,12 @@
-import { onReady } from "../lib/motion/env";
+import { onReady, allowHeavyMotion } from "../lib/motion/env";
 import { initSmoothScroll } from "../lib/motion/smooth";
 import { initGsap } from "../lib/motion/gsap";
 import { initUI } from "../lib/motion/ui";
-import { initCursor } from "../lib/motion/cursor";
 import { initReveal } from "../lib/motion/reveals";
 import { initServicesScroll } from "../lib/motion/services-scroll";
 import { initLightbox } from "../lib/motion/lightbox";
 import { initPreloader } from "../lib/motion/preloader";
 import { playHeroIntro } from "../lib/motion/hero";
-import { initHeroWebGL } from "../lib/motion/hero-webgl";
 
 // Each step is isolated: a failure in one feature must never trap the page
 // (e.g. leave the preloader curtain up or block scrolling).
@@ -39,15 +37,38 @@ export function initApp(): void {
     safe("smooth", () => initSmoothScroll());
     safe("gsap", () => initGsap());
     safe("ui", () => initUI());
-    safe("cursor", () => initCursor());
 
     // Scroll-driven content.
     safe("reveal", () => initReveal());
     safe("services", () => initServicesScroll());
     safe("lightbox", () => initLightbox());
 
+    // Keep the rolling words running only while their strip can be seen.
+    const marquee = document.querySelector<HTMLElement>(".marquee-track");
+    if (marquee) {
+      let inView = false;
+      const sync = () => { marquee.style.animationPlayState = inView && !document.hidden ? "running" : "paused"; };
+      const visibility = new IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting;
+        sync();
+      });
+      visibility.observe(marquee);
+      document.addEventListener("visibilitychange", sync);
+      sync();
+      window.addEventListener("pagehide", (event) => {
+        if (!event.persisted) {
+          visibility.disconnect();
+          document.removeEventListener("visibilitychange", sync);
+        }
+      });
+    }
+
     // WebGL hero — lazy + guarded + fully optional.
-    initHeroWebGL().catch((err) => console.error("[motion] webgl failed:", err));
+    if (allowHeavyMotion() && document.querySelector("[data-hero-canvas]")) {
+      import("../lib/motion/hero-webgl")
+        .then(({ initHeroWebGL }) => initHeroWebGL())
+        .catch((err) => console.error("[motion] webgl failed:", err));
+    }
 
     // Intro curtain → hero entrance. Always clears the failsafe + curtain.
     initPreloader()

@@ -8,6 +8,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "test:performance": "node --test tests/hero-webgl.test.mjs",
     "preview": "pnpm run build && wrangler dev",
     "astro": "astro",
     "deploy": "pnpm run build && wrangler deploy",
@@ -19,7 +21,6 @@
     "astro": "^5.0.0",
     "gsap": "^3.15.0",
     "lenis": "^1.3.23",
-    "three": "^0.184.0",
     "typescript": "^5.6.0"
   },
   "pnpm": {
@@ -29,7 +30,7 @@
     ]
   },
   "devDependencies": {
-    "@types/three": "^0.184.1",
+    "sharp": "0.34.5",
     "wrangler": "^4.90.0"
   }
 }
