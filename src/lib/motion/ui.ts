@@ -12,20 +12,29 @@ export function initUI(): void {
   const menuToggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
   const navLinks = document.querySelector<HTMLElement>(".nav-links");
   if (menuToggle && navLinks) {
+    const mobileMenu = window.matchMedia("(max-width: 1100px)");
     const setMenuOpen = (open: boolean) => {
+      if (open) document.querySelector(".site-header")?.classList.remove("is-hidden");
       navLinks.classList.toggle("is-open", open);
       menuToggle.classList.toggle("is-open", open);
       menuToggle.setAttribute("aria-expanded", String(open));
+      menuToggle.setAttribute("aria-label", open ? "Menu sluiten" : "Menu openen");
       document.body.classList.toggle("nav-menu-open", open);
+      if (open) getLenis()?.stop();
+      else getLenis()?.start();
     };
     menuToggle.addEventListener("click", () =>
       setMenuOpen(!navLinks.classList.contains("is-open"))
     );
     navLinks.querySelectorAll("a").forEach((link) =>
-      link.addEventListener("click", () => setMenuOpen(false))
+      // Unlock before the smooth-scroll anchor handler runs.
+      link.addEventListener("click", () => setMenuOpen(false), { capture: true })
     );
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && navLinks.classList.contains("is-open")) setMenuOpen(false);
+    });
+    mobileMenu.addEventListener("change", () => {
+      if (!mobileMenu.matches && navLinks.classList.contains("is-open")) setMenuOpen(false);
     });
   }
 

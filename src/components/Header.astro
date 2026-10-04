@@ -30,13 +30,13 @@ const hasLogo = Boolean(settings.business.logo);
       )}
     </a>
 
-    <nav class="nav-links" aria-label="Hoofdnavigatie">
+    <nav class="nav-links" id="main-navigation" aria-label="Hoofdnavigatie">
       {nav.map(item => <a href={item.href}>{item.label}</a>)}
     </nav>
 
     <a href="/#contact" class="btn btn-nav-cta nav-cta" data-magnetic="0.3">Offerte aanvragen</a>
 
-    <button class="menu-toggle" aria-label="Menu openen" aria-expanded="false">
+    <button class="menu-toggle" aria-label="Menu openen" aria-expanded="false" aria-controls="main-navigation">
       <span></span><span></span><span></span>
     </button>
   </div>
