@@ -637,6 +637,46 @@ html:not(.js) .preloader,
   gap: 1rem;
   margin-top: 2.25rem;
 }
+.hero-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 58px;
+  padding: 0.5rem 0.25rem;
+  color: #fff;
+}
+.hero-phone-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.hero-phone:hover .hero-phone-icon,
+.hero-phone:focus-visible .hero-phone-icon {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.hero-phone-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.hero-phone-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.hero-phone-number {
+  font-size: 1.15rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
 .hero-stats {
   display: flex;
   flex-wrap: wrap;
@@ -1546,6 +1586,30 @@ a.ci-value:hover {
   border-top: 1px solid var(--hair-light);
   font-size: var(--step--1);
 }
+.footer-visits:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding-block: 1rem 1.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+.footer-visits p {
+  margin: 0;
+}
+.footer-visits strong {
+  color: #fff;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.footer-visits-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
 .footer-meta {
   color: rgba(255, 255, 255, 0.45);
 }
@@ -1713,6 +1777,9 @@ a.ci-value:hover {
   .hero-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+  .hero-phone {
+    justify-content: center;
   }
   .social-links--hero .social-pill {
     flex: 1 1 calc(50% - 0.35rem);

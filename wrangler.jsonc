@@ -13,5 +13,13 @@
   "assets": {
     "binding": "ASSETS",
     "directory": "dist"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "VISITS",
+      "database_name": "merati-visits",
+      "database_id": "5f60f4e3-683e-49a0-9c19-96f19b836d29",
+      "migrations_dir": "migrations/visits"
+    }
+  ]
 }

@@ -1,0 +1,15 @@
+// Local-only visitor-counter preview. Production still uses wrangler.jsonc.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "merati-visits-local",
+  "main": "dist/_worker.js/index.js",
+  "compatibility_date": "2026-05-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "binding": "ASSETS", "directory": "dist" },
+  "d1_databases": [{
+    "binding": "VISITS",
+    "database_name": "merati-visits-local",
+    "database_id": "00000000-0000-0000-0000-000000000000",
+    "migrations_dir": "migrations/visits"
+  }]
+}

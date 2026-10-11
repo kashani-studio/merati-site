@@ -70,4 +70,12 @@ const hasLogo = Boolean(settings.business.logo);
     <span>&copy; <span id="year">2026</span> {settings.business.name} - Alle rechten voorbehouden.</span>
     <span class="footer-meta">KBO {settings.business.kbo} - BTW {settings.business.btw}</span>
   </div>
+  <div class="container footer-visits" data-visit-counter hidden>
+    <span class="footer-visits-dot" aria-hidden="true"></span>
+    <p><strong data-visit-count></strong> bezoeken in de afgelopen 24 uur</p>
+  </div>
 </footer>
+
+<script>
+  import "../scripts/visits";
+</script>
